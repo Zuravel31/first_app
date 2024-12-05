@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -23,19 +24,29 @@ public class TransactionsServiceImpl implements TransactionsService {
     public TransactionsDto craeteTransactions(TransactionsDto transactionDTORequest) {
         Transactions entity = mapper.toEntity(transactionDTORequest);
         entity.setUpdatedAt(LocalDateTime.now()); // Устанавливаем текущее время
-        entity.setCreatedAt(LocalDateTime.now());
+        entity.setCreatedAt(LocalDateTime.now());// Устанавливаем текущее время
         Transactions entitySaved = repository.save(entity);
         TransactionsDto transactionDTOResponse = mapper.toDto(entitySaved);
         return transactionDTOResponse;
     }
 
     @Override
-    public void deleteTransactions(Integer id) {
-        repository.deleteById(id);
+    public boolean deleteTransactions(Integer id) {
+        return repository.findById(id)
+                .map(entity -> {
+                    repository.delete(entity);
+                    repository.flush();
+                    return true;
+                })
+                .orElse(false);
+
     }
 
-    public List<Transactions> getTransactionBy() {
-        return repository.findAll();
+    public List<TransactionsDto> getAll() {
+        return repository.findAll()
+                .stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -49,6 +60,8 @@ public class TransactionsServiceImpl implements TransactionsService {
                     return mapper.toDto(entitySaved);
                 });
     }
+
+
 }
 
 

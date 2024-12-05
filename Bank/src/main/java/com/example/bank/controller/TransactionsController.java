@@ -1,20 +1,16 @@
 package com.example.bank.controller;
 
 import com.example.bank.dto.TransactionsDto;
-import com.example.bank.entity.Transactions;
 import com.example.bank.service.TransactionsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
-
 
 @RestController
 @RequestMapping("api/bank")
@@ -29,15 +25,23 @@ public class TransactionsController {
         return service.craeteTransactions(transactionsDto);
     }
 
+
     @DeleteMapping("/{id}")// нужно вводить необходимое id в ручную
-    public void deleteTransactions(@PathVariable Integer id) {
-        service.deleteTransactions(id);
+    public ResponseEntity<String> deleteTransactionsId(@PathVariable Integer id) { // @PathVariable всегда используется когда есть "/{}"
+        boolean isDelete = service.deleteTransactions(id);
+        if (isDelete) {
+            return ResponseEntity.ok("Transactions delete secssesfule");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
+        }
+    }
+    @GetMapping
+    public List<TransactionsDto> getAll() {
+        return service.getAll();
     }
 
-    @GetMapping
-    public List<Transactions> getTransactionBy() {
-        return service.getTransactionBy();
-    }
+//    @GetMapping
+//    public
 
     @PutMapping("/{id}")
     public TransactionsDto updateTransactions(@PathVariable Integer id, @RequestBody @Validated TransactionsDto dto){
