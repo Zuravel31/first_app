@@ -8,10 +8,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 @RequiredArgsConstructor
 @Slf4j
@@ -50,7 +52,16 @@ public class TransactionsServiceImpl implements TransactionsService {
     }
 
     @Override
-    public Optional<TransactionsDto> updateTransactions(Integer id, TransactionsDto dto){
+    public List<TransactionsDto> getBalance(BigDecimal balance) {
+        return repository.findAll().stream()
+                .filter(entity -> entity.getBalance().compareTo(balance) > 0 //если без ввода balance вставить нужно эту строчку   .filter(entiy -> entiy.getBalance().compareTo(BigDecimal.valueOf(400.00)) > 0
+                        && "Failed".equals(entity.getStatus()))
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<TransactionsDto> updateTransactions(Integer id, TransactionsDto dto) {
         return repository.findById(id)
                 .map(entity -> {
                     entity.setUpdatedAt(LocalDateTime.now()); // Устанавливаем текущее время
@@ -60,8 +71,6 @@ public class TransactionsServiceImpl implements TransactionsService {
                     return mapper.toDto(entitySaved);
                 });
     }
-
-
 }
 
 

@@ -8,10 +8,6 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface TransactionsMapper {
-    @Mapping(target = "createdAt", ignore = true)
-//без них не сработает Put and Post, потому что они генерируются автоматически, а иначе будут перезаписаны значениями из DTO при маппинге, что приведет к конфликту
-    @Mapping(target = "updatedAt", ignore = true)
-//без них не сработает Put and Post, потому что они генерируются автоматически, а иначе будут перезаписаны значениями из DTO при маппинге, что приведет к конфликту
     TransactionsDto toDto(Transactions entity);
 
     @Mapping(target = "createdAt", ignore = true)

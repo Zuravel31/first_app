@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -40,11 +41,13 @@ public class TransactionsController {
         return service.getAll();
     }
 
-//    @GetMapping
-//    public
+    @GetMapping("/balance")
+    public List<TransactionsDto> getBalance(@RequestParam BigDecimal balance) {
+        return service.getBalance(balance);
+    }
 
     @PutMapping("/{id}")
-    public TransactionsDto updateTransactions(@PathVariable Integer id, @RequestBody @Validated TransactionsDto dto){
+    public TransactionsDto updateTransactions(@PathVariable Integer id, @Validated TransactionsDto dto) {
         return service.updateTransactions(id, dto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }

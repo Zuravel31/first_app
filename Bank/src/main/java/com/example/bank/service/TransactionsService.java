@@ -2,6 +2,7 @@ package com.example.bank.service;
 
 import com.example.bank.dto.TransactionsDto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,5 +14,9 @@ public interface TransactionsService {
 
     List<TransactionsDto> getAll();
 
+    List<TransactionsDto> getBalance(BigDecimal balance);
+
     Optional<TransactionsDto> updateTransactions(Integer id, TransactionsDto dto);
+
+
 }
