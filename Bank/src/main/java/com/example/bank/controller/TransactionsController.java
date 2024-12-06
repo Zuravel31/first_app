@@ -1,6 +1,7 @@
 package com.example.bank.controller;
 
 import com.example.bank.dto.TransactionsDto;
+import com.example.bank.entity.StatusTransactions;
 import com.example.bank.service.TransactionsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,11 +40,12 @@ public class TransactionsController {
     @GetMapping
     public List<TransactionsDto> getAll() {
         return service.getAll();
+
     }
 
     @GetMapping("/balance")
-    public List<TransactionsDto> getBalance(@RequestParam BigDecimal balance) {
-        return service.getBalance(balance);
+    public List<TransactionsDto> getBalance(@RequestParam BigDecimal balance, @RequestParam StatusTransactions status) {
+        return service.getBalance(balance, status);
     }
 
     @PutMapping("/{id}")

@@ -1,6 +1,7 @@
 package com.example.bank.service;
 
 import com.example.bank.dto.TransactionsDto;
+import com.example.bank.entity.StatusTransactions;
 import com.example.bank.entity.Transactions;
 import com.example.bank.mapper.TransactionsMapper;
 import com.example.bank.repository.TransactionsRepository;
@@ -9,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,8 +25,6 @@ public class TransactionsServiceImpl implements TransactionsService {
     @Override
     public TransactionsDto craeteTransactions(TransactionsDto transactionDTORequest) {
         Transactions entity = mapper.toEntity(transactionDTORequest);
-        entity.setUpdatedAt(LocalDateTime.now()); // Устанавливаем текущее время
-        entity.setCreatedAt(LocalDateTime.now());// Устанавливаем текущее время
         Transactions entitySaved = repository.save(entity);
         TransactionsDto transactionDTOResponse = mapper.toDto(entitySaved);
         return transactionDTOResponse;
@@ -45,32 +43,34 @@ public class TransactionsServiceImpl implements TransactionsService {
     }
 
     public List<TransactionsDto> getAll() {
-        return repository.findAll()
-                .stream()
+        List<Transactions> entities = repository.findAll();
+        return entities.stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<TransactionsDto> getBalance(BigDecimal balance) {
-        return repository.findAll().stream()
-                .filter(entity -> entity.getBalance().compareTo(balance) > 0 //если без ввода balance вставить нужно эту строчку   .filter(entiy -> entiy.getBalance().compareTo(BigDecimal.valueOf(400.00)) > 0
-                        && "Failed".equals(entity.getStatus()))
+    public List<TransactionsDto> getBalance(BigDecimal balance, StatusTransactions status) {
+        List<Transactions> entities = repository.findAll();
+        log.info("Entities retrieved from database: {}", entities);
+
+        List<TransactionsDto> dtos = entities.stream()
+                .filter(entity -> entity.getBalance().compareTo(balance) > 0
+                        && entity.getStatus() == status)
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
+
+        log.info("DTOs after mapping: {}", dtos);
+        return dtos;
     }
 
     @Override
     public Optional<TransactionsDto> updateTransactions(Integer id, TransactionsDto dto) {
         return repository.findById(id)
                 .map(entity -> {
-                    entity.setUpdatedAt(LocalDateTime.now()); // Устанавливаем текущее время
-                    entity.setCreatedAt(LocalDateTime.now()); // Устанавливаем текущее время
                     mapper.toEntityUpdate(dto, entity);
                     Transactions entitySaved = repository.save(entity);
                     return mapper.toDto(entitySaved);
                 });
     }
 }
-
-

@@ -1,5 +1,7 @@
+
 package com.example.bank.dto;
 
+import com.example.bank.entity.StatusTransactions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +21,7 @@ public class TransactionsDto {
 
     private String description;
 
-    private String status;
+    private StatusTransactions status;
 
     private BigDecimal  balance;
 }
