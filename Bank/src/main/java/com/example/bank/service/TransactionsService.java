@@ -13,11 +13,12 @@ public interface TransactionsService {
 
     boolean deleteTransactions(Integer id);
 
+    boolean deleteTransactionsBalance(BigDecimal balance);
+
     List<TransactionsDto> getAll();
 
-    List<TransactionsDto> getBalance(BigDecimal balance, StatusTransactions status);
+    List<TransactionsDto> getSender(BigDecimal balance, StatusTransactions status);
 
     Optional<TransactionsDto> updateTransactions(Integer id, TransactionsDto dto);
-
 
 }

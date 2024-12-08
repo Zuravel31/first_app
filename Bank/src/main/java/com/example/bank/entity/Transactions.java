@@ -28,5 +28,4 @@ public class Transactions {
     private StatusTransactions status;
 
     private BigDecimal balance;
-
 }

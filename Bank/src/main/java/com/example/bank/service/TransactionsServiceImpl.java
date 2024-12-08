@@ -42,6 +42,19 @@ public class TransactionsServiceImpl implements TransactionsService {
 
     }
 
+    @Override
+    public boolean deleteTransactionsBalance(BigDecimal balance) {
+        repository.findAll().stream()
+                .filter(entity -> entity.getBalance().compareTo(balance) == 0)
+                .map(entity -> {
+                    repository.delete(entity);
+                    repository.flush();
+                    return true;
+                })
+                .collect(Collectors.toList());
+        return true;
+    }
+
     public List<TransactionsDto> getAll() {
         List<Transactions> entities = repository.findAll();
         return entities.stream()
@@ -50,17 +63,13 @@ public class TransactionsServiceImpl implements TransactionsService {
     }
 
     @Override
-    public List<TransactionsDto> getBalance(BigDecimal balance, StatusTransactions status) {
+    public List<TransactionsDto> getSender(BigDecimal balance, StatusTransactions status) {
         List<Transactions> entities = repository.findAll();
-        log.info("Entities retrieved from database: {}", entities);
-
         List<TransactionsDto> dtos = entities.stream()
-                .filter(entity -> entity.getBalance().compareTo(balance) > 0
-                        && entity.getStatus() == status)
+                .filter(entity -> entity.getBalance().compareTo(balance) == 0 // eсли нужно выводить больше или меньше баланса все транзакции, то нужно менять знаки < >
+                        && entity.getStatus() == status) //что бы искать по sender(или по стрингу(если просто слово застолбить то добавить кавычки "слово")) sender.equals(entity.getSender())
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
-
-        log.info("DTOs after mapping: {}", dtos);
         return dtos;
     }
 

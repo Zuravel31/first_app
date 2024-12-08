@@ -27,7 +27,6 @@ public class TransactionsController {
         return service.craeteTransactions(transactionsDto);
     }
 
-
     @DeleteMapping("/{id}")// нужно вводить необходимое id в ручную
     public ResponseEntity<String> deleteTransactionsId(@PathVariable Integer id) { // @PathVariable всегда используется когда есть "/{}"
         boolean isDelete = service.deleteTransactions(id);
@@ -37,15 +36,25 @@ public class TransactionsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
         }
     }
+
+    @DeleteMapping("/balance")// нужно вводить необходимое id в ручную
+    public ResponseEntity<String> deleteTransactionsBalance(@RequestBody BigDecimal balance) { // @PathVariable всегда используется когда есть "/{}"
+        boolean isDelete = service.deleteTransactionsBalance(balance);
+        if (isDelete) {
+            return ResponseEntity.ok("Transactions delete secssesfule");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not found");
+        }
+    }
+
     @GetMapping
     public List<TransactionsDto> getAll() {
         return service.getAll();
-
     }
 
     @GetMapping("/balance")
     public List<TransactionsDto> getBalance(@RequestParam BigDecimal balance, @RequestParam StatusTransactions status) {
-        return service.getBalance(balance, status);
+        return service.getSender(balance, status);
     }
 
     @PutMapping("/{id}")

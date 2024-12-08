@@ -20,3 +20,7 @@ VALUES ('Alice Johnson', 'Bob Smith', 100.00, 'Payment for services', 'COMPLETED
        ('Karen Quinn', 'Leo Robinson', 190.00, 'Concert tickets', 'COMPLETED', 790.00),
        ('Martha Stewart', 'Nathan Turner', 200.00, 'Flight booking', 'FAILED', 900.00),
        ('Oliver Upton', 'Patricia Vaughn', 210.00, 'Hotel reservation', 'PROCESSING', 1010.00);
+;
+
+DELETE
+FROM transactions;
