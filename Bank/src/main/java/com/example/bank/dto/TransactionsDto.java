@@ -1,6 +1,7 @@
 
 package com.example.bank.dto;
 
+import com.example.bank.entity.EnumCurrency;
 import com.example.bank.entity.StatusTransactions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,15 +14,17 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class TransactionsDto {
 
-    private String receiver;
+        private String receiver;
 
-    private String sender;
+        private String sender;
 
-    private BigDecimal amount;
+        private BigDecimal amount;
 
-    private String description;
+        private String description;
 
-    private StatusTransactions status;
+        private StatusTransactions status;
 
-    private BigDecimal  balance;
-}
+        private BigDecimal balance;
+
+        private CurrencyDto currency;
+    }
