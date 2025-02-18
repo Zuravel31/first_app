@@ -3,6 +3,7 @@ package com.example.bank.controller;
 import com.example.bank.dto.CurrencyDto;
 import com.example.bank.dto.TransactionsDto;
 import com.example.bank.entity.StatusTransactions;
+import com.example.bank.entity.Transactions;
 import com.example.bank.service.CurrencyService;
 import com.example.bank.service.TransactionsService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -73,18 +73,10 @@ public class TransactionsController {
         return currencyService.createCurrency(currencyDto);
     }
 
-    @DeleteMapping("/currency/{id}")
-    public void deleteCurrency(@PathVariable Integer id) {
-        boolean isDeleted = currencyService.deleteCurrency(id);
-        if (!isDeleted) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Currency not found");
-        }
-    }
-
     @GetMapping("/currency")
     public ResponseEntity<List<CurrencyDto>> getAllCurrencies() {
         List<CurrencyDto> currency = currencyService.getAllCurrencies();
-        return   ResponseEntity.ok(currency);
+        return ResponseEntity.ok(currency);
     }
 
     @GetMapping("/currency/balabce")
@@ -93,9 +85,19 @@ public class TransactionsController {
         return ResponseEntity.ok(currencies);
     }
 
-    @PutMapping("/currency/{id}")
-    public CurrencyDto updateCurrency(@PathVariable Integer id, @RequestBody CurrencyDto currencyDto) {
-        return currencyService.updateCurrency(id, currencyDto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Currency not found"));
+    @GetMapping("/by-currency")
+    public ResponseEntity<?> getTransactionsByCurrency(@RequestParam Integer currencyId) {
+        try {
+            log.info("Received request for currencyId: {}", currencyId);
+            List<Transactions> transactions = service.getTransactionsByCurrency(currencyId);
+            if (!transactions.isEmpty()) {
+                return ResponseEntity.ok(transactions);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Transactions not found");
+            }
+        } catch (RuntimeException e) {
+            log.info("Error processing request for currencyId: {}", currencyId, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

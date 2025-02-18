@@ -19,11 +19,4 @@ public interface TransactionsMapper {
     List<TransactionsDto> toDtoList(List<Transactions> transaction);
 
 
-
-
-
-
-
-
-
 }

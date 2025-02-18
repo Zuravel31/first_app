@@ -1,11 +1,10 @@
 package com.example.bank.entity;
 
-import io.swagger.models.auth.In;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
@@ -14,6 +13,7 @@ import java.math.BigDecimal;
 @Entity
 @Table
 @Data
+@ToString(exclude = "currency")
 public class Transactions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +33,6 @@ public class Transactions {
     private BigDecimal balance;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "currency", nullable = false, referencedColumnName = "currency")
+    @JoinColumn(name = "currency_id", nullable = false)
     private Currency currency;
 }

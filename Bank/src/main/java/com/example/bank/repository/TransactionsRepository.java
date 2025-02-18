@@ -9,9 +9,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface TransactionsRepository extends JpaRepository<Transactions, Integer> {
-
     List<Transactions> findByBalance(BigDecimal balance);
 
-    List<Transactions> findByBalanceAndStatus(BigDecimal balance, StatusTransactions status);
+    List<Transactions> findByBalanceAndStatus(BigDecimal amount, StatusTransactions status);
 
+    List<Transactions> findByCurrency(Currency currency);
 }

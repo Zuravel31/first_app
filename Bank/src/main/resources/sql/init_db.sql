@@ -19,5 +19,5 @@ CREATE TABLE transactions
     description TEXT,
     status      VARCHAR(50)    NOT NULL,
     balance     NUMERIC(10, 2) NOT NULL,
-    currency    VARCHAR(3)     NOT NULL REFERENCES currency (currency)
+    currency_id INTEGER NOT NULL REFERENCES currency (id)
 );

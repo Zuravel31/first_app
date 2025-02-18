@@ -1,9 +1,8 @@
 package com.example.bank.service;
 
-import com.example.bank.dto.CurrencyDto;
 import com.example.bank.dto.TransactionsDto;
 import com.example.bank.entity.StatusTransactions;
-import org.springframework.transaction.annotation.Transactional;
+import com.example.bank.entity.Transactions;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,4 +22,5 @@ public interface TransactionsService {
 
     Optional<TransactionsDto> updateTransactions(Integer id, TransactionsDto dto);
 
+    List<Transactions> getTransactionsByCurrency(Integer currencyId);
 }
