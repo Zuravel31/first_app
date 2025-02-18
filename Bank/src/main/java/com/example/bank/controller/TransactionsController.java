@@ -1,7 +1,10 @@
 package com.example.bank.controller;
 
+import com.example.bank.dto.CurrencyDto;
 import com.example.bank.dto.TransactionsDto;
 import com.example.bank.entity.StatusTransactions;
+import com.example.bank.entity.Transactions;
+import com.example.bank.service.CurrencyService;
 import com.example.bank.service.TransactionsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class TransactionsController {
-
+    private final CurrencyService currencyService;
     private final TransactionsService service;
 
     @PostMapping
@@ -37,7 +39,7 @@ public class TransactionsController {
         }
     }
 
-    @DeleteMapping("/balance")// нужно вводить необходимое id в ручную
+    @DeleteMapping("/balance")
     public ResponseEntity<String> deleteTransactionsBalance(@RequestBody BigDecimal balance) { // @PathVariable всегда используется когда есть "/{}"
         boolean isDelete = service.deleteTransactionsBalance(balance);
         if (isDelete) {
@@ -48,8 +50,10 @@ public class TransactionsController {
     }
 
     @GetMapping
-    public List<TransactionsDto> getAll() {
-        return service.getAll();
+    public ResponseEntity<List<TransactionsDto>> getAllTransactions() {
+        List<TransactionsDto> transactions = service.getAll();
+        return ResponseEntity.ok(transactions);
+
     }
 
     @GetMapping("/balance")
@@ -58,8 +62,42 @@ public class TransactionsController {
     }
 
     @PutMapping("/{id}")
-    public TransactionsDto updateTransactions(@PathVariable Integer id, @Validated TransactionsDto dto) {
+    public ResponseEntity<TransactionsDto> updateTransactions(@PathVariable Integer id, @Validated @RequestBody TransactionsDto dto) {
         return service.updateTransactions(id, dto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/currency")
+    public CurrencyDto createCurrency(@RequestBody CurrencyDto currencyDto) {
+        return currencyService.createCurrency(currencyDto);
+    }
+
+    @GetMapping("/currency")
+    public ResponseEntity<List<CurrencyDto>> getAllCurrencies() {
+        List<CurrencyDto> currency = currencyService.getAllCurrencies();
+        return ResponseEntity.ok(currency);
+    }
+
+    @GetMapping("/currency/balabce")
+    public ResponseEntity<List<CurrencyDto>> getCurrenciesByCurrency(@RequestParam String currency) {
+        List<CurrencyDto> currencies = currencyService.getCurrenciesByCurrency(currency);
+        return ResponseEntity.ok(currencies);
+    }
+
+    @GetMapping("/by-currency")
+    public ResponseEntity<?> getTransactionsByCurrency(@RequestParam Integer currencyId) {
+        try {
+            log.info("Received request for currencyId: {}", currencyId);
+            List<Transactions> transactions = service.getTransactionsByCurrency(currencyId);
+            if (!transactions.isEmpty()) {
+                return ResponseEntity.ok(transactions);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Transactions not found");
+            }
+        } catch (RuntimeException e) {
+            log.info("Error processing request for currencyId: {}", currencyId, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

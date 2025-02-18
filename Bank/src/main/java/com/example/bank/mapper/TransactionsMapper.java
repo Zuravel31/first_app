@@ -5,12 +5,18 @@ import com.example.bank.entity.Transactions;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
+import java.util.List;
 
-@Mapper(componentModel = "spring")
+
+@Mapper(componentModel = "spring", uses = CurrencyMapper.class)
 public interface TransactionsMapper {
-    Transactions toEntity(TransactionsDto dto);
-
-    TransactionsDto toDto(Transactions entity);
+    TransactionsDto toDto(Transactions transaction);
 
     void toEntityUpdate(TransactionsDto dto, @MappingTarget Transactions entity);
+
+    Transactions toEntity(TransactionsDto dto);
+
+    List<TransactionsDto> toDtoList(List<Transactions> transaction);
+
+
 }
