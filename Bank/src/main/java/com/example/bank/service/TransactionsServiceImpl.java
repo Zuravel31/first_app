@@ -24,7 +24,6 @@ public class TransactionsServiceImpl implements TransactionsService {
     @Autowired
     private CurrencyRepository currencyRepository;
 
-
     @Autowired
     private TransactionsRepository repository;
 
@@ -92,13 +91,11 @@ public class TransactionsServiceImpl implements TransactionsService {
     }
 
     @Override
-    public List<Transactions> getTransactionsByCurrency(Integer currencyId) {
-        log.info("Fetching currency with ID: {}", currencyId);
+    public CurrencyAndTransactions getTransactionsByCurrency(Integer currencyId) {
         Currency cur = currencyRepository.findById(currencyId)
                 .orElseThrow(() -> new RuntimeException("Currency not found"));
-        log.info("Fetching transactions for currency: {}", cur);
         List<Transactions> transactions = repository.findByCurrency(cur);
-        return transactions;
+        return new CurrencyAndTransactions(cur, transactions);
     }
 }
 

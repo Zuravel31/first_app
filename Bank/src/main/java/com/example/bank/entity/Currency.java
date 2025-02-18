@@ -1,5 +1,6 @@
 package com.example.bank.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class Currency {
     @Enumerated(EnumType.STRING)
     private EnumCurrency currency;
 
+    @JsonBackReference//от рекурсии
     @OneToMany(mappedBy = "currency", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transactions> transactions;
 

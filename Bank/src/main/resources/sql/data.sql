@@ -31,4 +31,10 @@ VALUES ('Alice Johnson', 'Bob Smith', 100.00, 'Payment for services', 'COMPLETED
        ('George Mason', 'Hannah Nelson', 170.00, 'Book purchase', 'FAILED', 570.00, '7'),
        ('Irene Owens', 'Jackson Parker', 180.00, 'Restaurant bill', 'PROCESSING', 680.00, '8'),
        ('Karen Quinn', 'Leo Robinson', 190.00, 'Concert tickets', 'COMPLETED', 790.00, '9'),
-       ('Martha Stewart', 'Nathan Turner', 200.00, 'Flight booking', 'FAILED', 900.00, '10');
+       ('Martha Stewart', 'Nathan Turner', 200.00, 'Flight booking', 'FAILED', 900.00, '10'),
+       ('Frank Sharko', 'Lusi Anabel', '1000.00', 'Food shope', 'COMPLETED', '15000.00', '10');
+
+
+
+
+
