@@ -4,16 +4,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.math.BigDecimal;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table
-@Data
-@ToString(exclude = "currency")
 public class Transactions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +28,4 @@ public class Transactions {
     private StatusTransactions status;
 
     private BigDecimal balance;
-
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "currency_id", nullable = false)
-    private Currency currency;
 }
