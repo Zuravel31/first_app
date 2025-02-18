@@ -4,6 +4,7 @@ import com.example.bank.dto.CurrencyDto;
 import com.example.bank.dto.TransactionsDto;
 import com.example.bank.entity.StatusTransactions;
 import com.example.bank.entity.Transactions;
+import com.example.bank.service.CurrencyAndTransactions;
 import com.example.bank.service.CurrencyService;
 import com.example.bank.service.TransactionsService;
 import lombok.RequiredArgsConstructor;
@@ -73,31 +74,30 @@ public class TransactionsController {
         return currencyService.createCurrency(currencyDto);
     }
 
-    @GetMapping("/currency")
+    @GetMapping("/currencyAll")
     public ResponseEntity<List<CurrencyDto>> getAllCurrencies() {
         List<CurrencyDto> currency = currencyService.getAllCurrencies();
         return ResponseEntity.ok(currency);
     }
 
-    @GetMapping("/currency/balabce")
+    @GetMapping("/currency")
     public ResponseEntity<List<CurrencyDto>> getCurrenciesByCurrency(@RequestParam String currency) {
         List<CurrencyDto> currencies = currencyService.getCurrenciesByCurrency(currency);
         return ResponseEntity.ok(currencies);
     }
 
-    @GetMapping("/by-currency")
+    @GetMapping("/currencyId")
     public ResponseEntity<?> getTransactionsByCurrency(@RequestParam Integer currencyId) {
         try {
-            log.info("Received request for currencyId: {}", currencyId);
-            List<Transactions> transactions = service.getTransactionsByCurrency(currencyId);
-            if (!transactions.isEmpty()) {
-                return ResponseEntity.ok(transactions);
-            } else {
+            CurrencyAndTransactions result = service.getTransactionsByCurrency(currencyId);
+            List<Transactions> transactions = result.getTransactions();
+            if (transactions == null || transactions.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Transactions not found");
+            } else {
+                return ResponseEntity.ok(result);
             }
         } catch (RuntimeException e) {
-            log.info("Error processing request for currencyId: {}", currencyId, e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+        }
     }
-}

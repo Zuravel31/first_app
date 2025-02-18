@@ -1,5 +1,6 @@
 package com.example.bank.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,6 +33,7 @@ public class Transactions {
 
     private BigDecimal balance;
 
+    @JsonBackReference//от рекурсии
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "currency_id", nullable = false)
     private Currency currency;
